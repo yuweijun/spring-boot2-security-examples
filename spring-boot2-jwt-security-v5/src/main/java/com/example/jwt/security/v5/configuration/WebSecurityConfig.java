@@ -1,6 +1,5 @@
 package com.example.jwt.security.v5.configuration;
 
-import com.example.jwt.security.v5.exception.RestfulAccessDeniedHandler;
 import com.example.jwt.security.v5.security.JwtLoginFilter;
 import com.example.jwt.security.v5.security.JwtTokenFilter;
 import com.example.jwt.security.v5.security.JwtTokenProvider;
@@ -85,8 +84,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterBefore(myFilterSecurityInterceptor(), FilterSecurityInterceptor.class);
 
         // http.exceptionHandling().accessDeniedPage("/login");
-        http.exceptionHandling()
-            .accessDeniedHandler(restfulAccessDeniedHandler());
     }
 
     @Override
@@ -139,11 +136,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         LOGGER.info("create bean AuthenticationManager");
         return super.authenticationManagerBean();
-    }
-
-    @Bean
-    public RestfulAccessDeniedHandler restfulAccessDeniedHandler() {
-        return new RestfulAccessDeniedHandler();
     }
 
 }
