@@ -15,29 +15,14 @@ public class SecureEnabledController {
     /**
      * {@link org.springframework.security.access.vote.RoleVoter#vote(Authentication, Object, Collection)}
      *
-     * MUST add prefix ROLE_ before authorities name, so voter.vote() will fail if authentication's authority name is not start with ROLE_
+     * original RoleVoter MUST add prefix ROLE_ before authorities name, so voter.vote() will fail if authentication's authority name is not start with ROLE_
      *
-     * <pre>
-     * for (ConfigAttribute attribute : attributes) {
-     *     if (this.supports(attribute)) {
-     *         result = ACCESS_DENIED;
-     *
-     *         // Attempt to find a matching granted authority
-     *         for (GrantedAuthority authority : authorities) {
-     *             if (attribute.getAttribute().equals(authority.getAuthority())) {
-     *                 return ACCESS_GRANTED;
-     *             }
-     *         }
-     *     }
-     * }
-     * </pre>
-     *
-     * override AccessDecisionManager and add new Voter if we need support secureEnabled
+     * {@link com.example.jwt.security.v6.configuration.MyMethodSecurityConfig} accessDecisionManager add new RoleVoter with prefix empty string.
      */
-    @Secured({"ROLE_ADMIN_PRIVILEGE", "ROLE_USER_PRIVILEGE"})
+    @Secured({"ADMIN_PRIVILEGE", "USER_PRIVILEGE"})
     @GetMapping("/secured")
     public String secured() {
-        return "org.springframework.security.access.AccessDeniedException: Access is denied for secureEnabled@Secured because privileges name do not prefix ROLE_";
+        return "accessDecisionManager add new RoleVoter().setRolePrefix('') for secureEnabled annotation @Secured";
     }
 
     @GetMapping("/test")

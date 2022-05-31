@@ -32,7 +32,18 @@ public class SecureEnabledController {
      * }
      * </pre>
      *
-     * override AccessDecisionManager and add new Voter if we need support secureEnabled
+     * override AccessDecisionManager and add new RoleVoter and setPrefix of RoleVoter if we need support secureEnabled
+     *
+     * <pre>
+     * if (accessDecisionManager instanceof AffirmativeBased) {
+     *     AffirmativeBased affirmativeBased = (AffirmativeBased) accessDecisionManager;
+     *     final List<AccessDecisionVoter<?>> decisionVoters = affirmativeBased.getDecisionVoters();
+     *     RoleVoter roleVoter = new RoleVoter();
+     *     roleVoter.setRolePrefix("");
+     *     decisionVoters.add(roleVoter);
+     * }
+     *
+     * </pre>
      */
     @Secured({"ROLE_ADMIN_PRIVILEGE", "ROLE_USER_PRIVILEGE"})
     @GetMapping("/secured")

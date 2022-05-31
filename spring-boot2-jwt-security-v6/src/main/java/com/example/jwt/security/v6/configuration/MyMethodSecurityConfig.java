@@ -9,12 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.method.MapBasedMethodSecurityMetadataSource;
 import org.springframework.security.access.method.MethodSecurityMetadataSource;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
+
+import java.util.List;
 
 /**
  * <pre>
@@ -34,8 +39,16 @@ public class MyMethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 
     @Override
     protected AccessDecisionManager accessDecisionManager() {
-        LOGGER.info("get accessDecisionManager from : {}", this.getClass().getSimpleName());
-        return super.accessDecisionManager();
+        final AccessDecisionManager accessDecisionManager = super.accessDecisionManager();
+        LOGGER.info("get accessDecisionManager {} from : {}", accessDecisionManager.getClass().getName(), this.getClass().getSimpleName());
+        if (accessDecisionManager instanceof AffirmativeBased) {
+            AffirmativeBased affirmativeBased = (AffirmativeBased) accessDecisionManager;
+            final List<AccessDecisionVoter<?>> decisionVoters = affirmativeBased.getDecisionVoters();
+            RoleVoter roleVoter = new RoleVoter();
+            roleVoter.setRolePrefix("");
+            decisionVoters.add(roleVoter);
+        }
+        return accessDecisionManager;
     }
 
     @Override

@@ -37,10 +37,9 @@ public class MyFilterSecurityInterceptor extends FilterSecurityInterceptor imple
 
     @Override
     public void invoke(FilterInvocation fi) throws IOException, ServletException {
-        LOGGER.info("FilterInvocation fi Holds objects associated with a HTTP filter : {}", fi);
         Collection<ConfigAttribute> attributes = this.obtainSecurityMetadataSource().getAttributes(fi);
-        LOGGER.info("obtain security metadata source from FilterInvocation fi : {}", attributes);
-        fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
+        LOGGER.info("obtain security metadata source {}, from FilterInvocation fi : {}", attributes.size(), fi);
+        super.invoke(fi);
     }
 
     @Override
