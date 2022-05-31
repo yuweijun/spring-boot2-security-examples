@@ -18,12 +18,9 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 
 /**
  * <pre>
- * disable annotation @EnableGlobalMethodSecurity in class {@link MultiHttpSecurityConfig.WebAdminSecurityConfig} avoid error:
- * The bean 'methodSecurityInterceptor', defined in class path resource [org/springframework/security/config/annotation/method/configuration/GlobalMethodSecurityConfiguration.class], could not be registered. A bean with that name has already been defined in class path resource [com/example/jwt/security/v3/configuration/MyMethodSecurityFirstConfig.class] and overriding is disabled.
- *
  * Base Configuration for enabling global method security.
  * Classes may extend this class to customize the defaults,
- * but must be sure to specify the EnableGlobalMethodSecurity annotation on the subclass.
+ * but must be sure to specify the {@link EnableGlobalMethodSecurity} annotation on the subclass.
  * </pre>
  */
 @Configuration

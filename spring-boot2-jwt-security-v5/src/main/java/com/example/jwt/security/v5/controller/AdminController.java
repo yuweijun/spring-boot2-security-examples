@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,8 +24,8 @@ public class AdminController {
 
     @GetMapping("/info")
     @ApiOperation(value = "${AdminController.info}")
-    public User info() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public UserDetails info() {
+        return (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }

@@ -56,8 +56,10 @@ public class MultiHttpSecurityConfig {
      * Classes may extend this class to customize the defaults,
      * but must be sure to specify the EnableGlobalMethodSecurity annotation on the subclass.
      * </pre>
+     *
+     * This {@link Order} must prior to {@link WebSecurityConfig}
      */
-    @Order(20)
+    @Order(1)
     @Configuration
     // @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
     public static class WebAdminSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -123,15 +125,12 @@ public class MultiHttpSecurityConfig {
 
             http.csrf().disable();
 
-            // Entry points
             http.authorizeRequests()
                 .antMatchers("/", "/login", "/home").permitAll()
                 .antMatchers("/users/signin").permitAll()
                 .antMatchers("/users/signup").permitAll()
 
-                // hasRole("ADMIN") should be declared before authenticated()
                 // Caused by: role should not start with 'ROLE_' since it is automatically inserted. Got 'ROLE_ADMIN'
-                .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/**").hasAnyRole("ADMIN", "CLIENT", "USER")
                 .anyRequest()
                 .authenticated()

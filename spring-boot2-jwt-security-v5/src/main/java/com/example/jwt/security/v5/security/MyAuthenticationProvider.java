@@ -44,7 +44,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         return authenticate(username, password);
     }
 
-    public MyAuthenticationToken authenticate(String username, String password) {
+    private MyAuthenticationToken authenticate(String username, String password) {
         UserDetails userDetails = jwtTokenBasedUserDetails.loadUserByUsername(username);
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             LOGGER.error("Authentication failed: password does not match stored value");

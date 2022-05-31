@@ -28,7 +28,13 @@ public class MyPermissionEvaluator implements PermissionEvaluator {
 
     private boolean hasPrivilege(Authentication auth, String targetType, String permission) {
         for (GrantedAuthority grantedAuth : auth.getAuthorities()) {
-            if (grantedAuth.getAuthority().startsWith(targetType) && grantedAuth.getAuthority().contains(permission)) {
+            final String authority = grantedAuth.getAuthority();
+            // for admin
+            if (authority.equals("ADMIN_PRIVILEGE")) {
+                return true;
+            }
+
+            if (authority.startsWith(targetType) && authority.contains(permission)) {
                 return true;
             }
         }

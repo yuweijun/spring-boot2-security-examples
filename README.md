@@ -1,4 +1,4 @@
-# spring-boot2-examples
+# spring-boot2-security-examples
 
 # compile and build
 

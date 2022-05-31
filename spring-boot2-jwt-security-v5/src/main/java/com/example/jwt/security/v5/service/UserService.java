@@ -32,7 +32,7 @@ public class UserService {
     public String signin(String username, String password) {
         try {
             authenticationManager.authenticate(new MyAuthenticationToken(username, password));
-            return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getRoles());
+            return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getPrivileges());
         } catch (AuthenticationException e) {
             throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -42,7 +42,7 @@ public class UserService {
         if (!userRepository.existsByUsername(user.getUsername())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
-            return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
+            return jwtTokenProvider.createToken(user.getUsername(), user.getPrivileges());
         } else {
             throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -65,7 +65,7 @@ public class UserService {
     }
 
     public String refresh(String username) {
-        return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getRoles());
+        return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getPrivileges());
     }
 
 }

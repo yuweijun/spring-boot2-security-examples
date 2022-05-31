@@ -1,6 +1,6 @@
 package com.example.jwt.security.v5.dto;
 
-import com.example.jwt.security.v5.model.Role;
+import com.example.jwt.security.v5.model.Organization;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 public class UserDataDTO {
 
     @ApiModelProperty(position = 3)
-    List<Role> roles;
+    List<Organization> roles;
     @ApiModelProperty(position = 0)
     private String username;
     @ApiModelProperty(position = 1)
@@ -40,11 +40,11 @@ public class UserDataDTO {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public List<Organization> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<Organization> roles) {
         this.roles = roles;
     }
 

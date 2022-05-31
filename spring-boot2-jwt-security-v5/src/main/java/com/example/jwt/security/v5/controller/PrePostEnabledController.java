@@ -31,10 +31,10 @@ public class PrePostEnabledController {
         return securityCheckService.preAuthorize();
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_PRIVILEGE', 'USER_PRIVILEGE')")
     @GetMapping("/hasAuthority")
     public String hasAuthority() {
-        return "@PreAuthorize(\"hasAuthority('ADMIN') or hasAnyRole('ROLE_ADMIN', 'ROLE_USER')\")";
+        return "hasAnyAuthority('ADMIN_PRIVILEGE', 'USER_PRIVILEGE')\")";
     }
 
 }

@@ -1,7 +1,7 @@
 package com.example.jwt.security.v5.security;
 
 import com.example.jwt.security.v5.exception.CustomException;
-import com.example.jwt.security.v5.model.Role;
+import com.example.jwt.security.v5.model.Privilege;
 import com.example.jwt.security.v5.service.JwtParserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -47,13 +47,13 @@ public class JwtTokenProvider {
     }
 
     public String createToken(String username) {
-        return createToken(username, Collections.emptyList());
+        return createToken(username, Collections.emptySet());
     }
 
-    public String createToken(String username, List<Role> roles) {
+    public String createToken(String username, Set<Privilege> privileges) {
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("auth", roles.stream()
-                                .map(s -> new SimpleGrantedAuthority(s.getAuthority()))
+        claims.put("auth", privileges.stream()
+                                .map(s -> new SimpleGrantedAuthority(s.getName()))
                                 .collect(Collectors.toList()));
 
         Date now = new Date();

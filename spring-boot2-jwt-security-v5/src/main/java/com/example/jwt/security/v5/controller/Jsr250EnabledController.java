@@ -27,7 +27,7 @@ public class Jsr250EnabledController {
         return "JSR-250@PermitAll";
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
+    @RolesAllowed({"ADMIN_PRIVILEGE", "USER_PRIVILEGE"})
     @GetMapping("/rolesAllowed")
     public String rolesAllowed() {
         return "JSR-250@RolesAllowed";

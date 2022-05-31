@@ -1,40 +1,46 @@
 package com.example.jwt.security.v5.model;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Size;
-import java.util.List;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import java.util.Set;
 
 @Entity
 public class User {
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    List<Role> roles;
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    @Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(unique = true, nullable = false)
-    private String email;
-
-    @Size(min = 8, message = "Minimum password length: 8 characters")
     private String password;
 
-    public Integer getId() {
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_privileges",
+        joinColumns =
+        @JoinColumn(name = "user_id", referencedColumnName = "id"),
+        inverseJoinColumns =
+        @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
+    private Set<Privilege> privileges;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "organization_id", referencedColumnName = "id")
+    private Organization organization;
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -46,14 +52,6 @@ public class User {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -62,21 +60,30 @@ public class User {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Set<Privilege> getPrivileges() {
+        return privileges;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setPrivileges(Set<Privilege> privileges) {
+        this.privileges = privileges;
+    }
+
+    public Organization getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 
     @Override
     public String toString() {
         return "User{" +
-            "roles=" + roles +
-            ", id=" + id +
+            "id=" + id +
             ", username='" + username + '\'' +
-            ", email='" + email + '\'' +
+            ", password='" + password + '\'' +
+            ", privileges=" + privileges +
+            ", organization=" + organization +
             '}';
     }
 }

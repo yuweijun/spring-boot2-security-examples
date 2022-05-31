@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(value = java.lang.annotation.RetentionPolicy.RUNTIME)
 @Target(value = {java.lang.annotation.ElementType.TYPE})
 @Documented
-@Import({JwtSecurityImportBeanDefinitionRegistrar.class, MultiHttpSecurityConfig.WebAdminSecurityConfig.class, SpringWebMvcConfig.class})
+@Import({JwtSecurityImportBeanDefinitionRegistrar.class, SpringWebMvcConfig.class})
 @Configuration
 public @interface EnableJwtSecurity {
 

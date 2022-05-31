@@ -10,7 +10,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -60,7 +60,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request,
         HttpServletResponse response, FilterChain chain, Authentication authResult)
         throws IOException, ServletException {
-        String token = jwtTokenProvider.createToken(((User) authResult.getPrincipal()).getUsername());
+        String token = jwtTokenProvider.createToken(((UserDetails) authResult.getPrincipal()).getUsername());
         response.addHeader("Authorization", "Bearer " + token);
         super.successfulAuthentication(request, response, chain, authResult);
     }
