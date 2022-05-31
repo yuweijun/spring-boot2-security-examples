@@ -1,4 +1,4 @@
-package com.example.jwt.security.v5.controller;
+package com.example.jwt.security.v6.controller;
 
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
