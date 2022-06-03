@@ -1,6 +1,6 @@
-package com.example.jwt.security.v6.security;
+package com.example.jwt.security.v7.security;
 
-import com.example.jwt.security.v6.service.JwtParserService;
+import com.example.jwt.security.v7.service.JwtParserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
