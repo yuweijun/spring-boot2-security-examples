@@ -1,4 +1,4 @@
-package com.example.jwt.security.v6.controller;
+package com.example.jwt.security.v7.controller;
 
 import com.example.jwt.security.v7.JwtSecurityV7Application;
 import com.example.jwt.security.v7.model.Organization;

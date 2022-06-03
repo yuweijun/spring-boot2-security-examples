@@ -1,5 +1,6 @@
 package com.example.jwt.security.v7.controller;
 
+import com.example.jwt.security.v7.configuration.IsAdmin;
 import com.example.jwt.security.v7.dto.UserDataDTO;
 import com.example.jwt.security.v7.dto.UserResponseDTO;
 import com.example.jwt.security.v7.model.User;
@@ -107,6 +108,12 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN_PRIVILEGE') or hasAuthority('USER_PRIVILEGE') or hasAuthority('CLIENT_PRIVILEGE')")
     public String refresh(HttpServletRequest req) {
         return userService.refresh(req.getRemoteUser());
+    }
+
+    @IsAdmin
+    @GetMapping("/isAdminAnnotation")
+    public String isAdminAnnotation() {
+        return "@interface IsAdmin";
     }
 
     @GetMapping("/isAdmin")
