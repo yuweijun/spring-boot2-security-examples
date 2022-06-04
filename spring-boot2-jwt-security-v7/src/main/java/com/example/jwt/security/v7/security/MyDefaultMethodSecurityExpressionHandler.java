@@ -22,6 +22,7 @@ public class MyDefaultMethodSecurityExpressionHandler extends DefaultMethodSecur
     protected MethodSecurityExpressionOperations createSecurityExpressionRoot(Authentication authentication, MethodInvocation invocation) {
         final MyMethodSecurityExpressionRoot root = new MyMethodSecurityExpressionRoot(authentication);
         root.setThis(invocation.getThis());
+        root.setMethodInvocation(invocation);
         root.setPermissionEvaluator(getPermissionEvaluator());
         root.setTrustResolver(getTrustResolver());
         root.setRoleHierarchy(getRoleHierarchy());

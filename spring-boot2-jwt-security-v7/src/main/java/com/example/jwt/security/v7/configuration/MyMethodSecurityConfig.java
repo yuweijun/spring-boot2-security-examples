@@ -2,6 +2,7 @@ package com.example.jwt.security.v7.configuration;
 
 import com.example.jwt.security.v7.security.MyDefaultMethodSecurityExpressionHandler;
 import com.example.jwt.security.v7.security.MyPermissionEvaluator;
+import com.example.jwt.security.v7.security.MyPrePostAnnotationSecurityMetadataSource;
 import com.example.jwt.security.v7.service.SecurityCheckService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +11,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.SecurityConfig;
+import org.springframework.security.access.expression.method.ExpressionBasedAnnotationAttributeFactory;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
-import org.springframework.security.access.method.MapBasedMethodSecurityMetadataSource;
 import org.springframework.security.access.method.MethodSecurityMetadataSource;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleVoter;
@@ -54,8 +54,10 @@ public class MyMethodSecurityConfig extends GlobalMethodSecurityConfiguration {
     @Override
     public MethodSecurityMetadataSource customMethodSecurityMetadataSource() {
         LOGGER.info("add metadata source for {}", SecurityCheckService.class);
-        MapBasedMethodSecurityMetadataSource metadataSource = new MapBasedMethodSecurityMetadataSource();
-        metadataSource.addSecureMethod(SecurityCheckService.class, "customMethodSecurityMetadataSource", SecurityConfig.createList("ROLE_ADMIN"));
+        ExpressionBasedAnnotationAttributeFactory attributeFactory =
+            new ExpressionBasedAnnotationAttributeFactory(super.getExpressionHandler());
+        MyPrePostAnnotationSecurityMetadataSource metadataSource = new MyPrePostAnnotationSecurityMetadataSource(attributeFactory);
+        // metadataSource.addSecureMethod(SecurityCheckService.class, "customMethodSecurityMetadataSource", SecurityConfig.createList("ROLE_ADMIN"));
         return metadataSource;
     }
 

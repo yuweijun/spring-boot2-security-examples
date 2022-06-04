@@ -1,17 +1,25 @@
 package com.example.jwt.security.v7.security;
 
+import org.aopalliance.intercept.MethodInvocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
 
-public class MyMethodSecurityExpressionRoot extends SecurityExpressionRoot
-    implements MethodSecurityExpressionOperations {
+import java.io.Serializable;
+
+public class MyMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyMethodSecurityExpressionRoot.class);
 
     private Object filterObject;
 
     private Object returnObject;
 
     private Object target;
+
+    private MethodInvocation methodInvocation;
 
     private boolean isAdmin;
 
@@ -57,4 +65,27 @@ public class MyMethodSecurityExpressionRoot extends SecurityExpressionRoot
         this.isAdmin = admin;
     }
 
+    public MethodInvocation getMethodInvocation() {
+        return methodInvocation;
+    }
+
+    public void setMethodInvocation(MethodInvocation methodInvocation) {
+        this.methodInvocation = methodInvocation;
+    }
+
+    /**
+     * {@link MyDefaultMethodSecurityExpressionHandler#createSecurityExpressionRoot(Authentication, MethodInvocation)}
+     * this method can inject {@link MethodInvocation} and get method info before call super.hasPermission(...)
+     */
+    @Override
+    public boolean hasPermission(Object target, Object permission) {
+        LOGGER.info("hasPermission({}, {}) for MethodInvocation : {}", target, permission, methodInvocation);
+        return super.hasPermission(target, permission);
+    }
+
+    @Override
+    public boolean hasPermission(Object targetId, String targetType, Object permission) {
+        LOGGER.info("hasPermission({}, {}, {})", targetId, targetType, permission);
+        return super.hasPermission((Serializable) targetId, targetType, permission);
+    }
 }

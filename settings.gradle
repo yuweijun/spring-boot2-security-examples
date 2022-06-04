@@ -4,11 +4,11 @@
 
 rootProject.name = 'spring-boot2-security-examples'
 
-include(':spring-boot2-jwt-security-v1')
-include(':spring-boot2-jwt-security-v2')
-include(':spring-boot2-jwt-security-v3')
-include(':spring-boot2-jwt-security-v4')
-include(':spring-boot2-jwt-security-v5')
-include(':spring-boot2-jwt-security-v6')
+// include(':spring-boot2-jwt-security-v1')
+// include(':spring-boot2-jwt-security-v2')
+// include(':spring-boot2-jwt-security-v3')
+// include(':spring-boot2-jwt-security-v4')
+// include(':spring-boot2-jwt-security-v5')
+// include(':spring-boot2-jwt-security-v6')
 include(':spring-boot2-jwt-security-v7')
-include(':spring-boot2-reactive-security')
+// include(':spring-boot2-reactive-security')

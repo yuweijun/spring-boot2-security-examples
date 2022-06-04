@@ -24,4 +24,16 @@ public class HasPermissionController {
         return message;
     }
 
+    @PreAuthorize("hasPermission('USER', 'read')")
+    @GetMapping("/check2")
+    public String check2() {
+        return "@PreAuthorize(\"hasPermission('USER', 'read')\")";
+    }
+
+    @PreAuthorize("hasPermission('id', 'USER', 'read')")
+    @GetMapping("/check3")
+    public String check3() {
+        return "@PreAuthorize(\"hasPermission('id', 'USER', 'read')\")";
+    }
+
 }
