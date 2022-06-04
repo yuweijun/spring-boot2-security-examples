@@ -147,7 +147,20 @@ public class UserController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
+    @ApiOperation(value = "${UserController.create}", response = UserResponseDTO.class)
     public User create(@RequestBody User user) {
+        user.setId(null);
         return userRepository.save(user);
     }
+
+    @PreAuthorize("@permissionEvaluator.hasPermission(authentication, #user, 'WRITE')")
+    @PostMapping("/save")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    @ApiOperation(value = "${UserController.save}", response = UserResponseDTO.class)
+    public UserResponseDTO save(@RequestBody User user) {
+        user = userRepository.save(user);
+        return modelMapper.map(user, UserResponseDTO.class);
+    }
+
 }

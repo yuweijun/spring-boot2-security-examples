@@ -8,9 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.ExpressionBasedAnnotationAttributeFactory;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.method.MethodSecurityMetadataSource;
@@ -57,7 +59,6 @@ public class MyMethodSecurityConfig extends GlobalMethodSecurityConfiguration {
         ExpressionBasedAnnotationAttributeFactory attributeFactory =
             new ExpressionBasedAnnotationAttributeFactory(super.getExpressionHandler());
         MyPrePostAnnotationSecurityMetadataSource metadataSource = new MyPrePostAnnotationSecurityMetadataSource(attributeFactory);
-        // metadataSource.addSecureMethod(SecurityCheckService.class, "customMethodSecurityMetadataSource", SecurityConfig.createList("ROLE_ADMIN"));
         return metadataSource;
     }
 
@@ -81,9 +82,14 @@ public class MyMethodSecurityConfig extends GlobalMethodSecurityConfiguration {
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         LOGGER.info("MyMethodSecurityConfig#createExpressionHandler from class : {}", this.getClass().getName());
         MyDefaultMethodSecurityExpressionHandler expressionHandler = new MyDefaultMethodSecurityExpressionHandler();
-        expressionHandler.setPermissionEvaluator(new MyPermissionEvaluator());
+        expressionHandler.setPermissionEvaluator(permissionEvaluator());
         expressionHandler.setApplicationContext(applicationContext);
         return expressionHandler;
+    }
+
+    @Bean
+    public PermissionEvaluator permissionEvaluator() {
+        return new MyPermissionEvaluator();
     }
 
 }

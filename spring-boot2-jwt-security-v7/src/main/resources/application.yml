@@ -34,6 +34,8 @@ UserController:
   delete: Deletes specific user by username
   search: Returns specific user by username
   me: Returns current user's data
+  save: save or update user
+  create: save new user
 
 management:
   beans:

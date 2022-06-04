@@ -177,6 +177,26 @@
     ...
     run:829, Thread (java.lang)
 
+## [ any request ] DefaultSecurityFilterChain#getFilters()
+    filters = {ArrayList@13376}  size = 17
+    0 = {WebAsyncManagerIntegrationFilter@13402}
+    1 = {SecurityContextPersistenceFilter@13403}
+    2 = {HeaderWriterFilter@13404}
+    3 = {MyFilter@13405}
+    4 = {LogoutFilter@13406}
+    5 = {JwtLoginFilter@13407}
+    6 = {UsernamePasswordAuthenticationFilter@13408}
+    7 = {DefaultLoginPageGeneratingFilter@13409}
+    8 = {DefaultLogoutPageGeneratingFilter@13410}
+    9 = {JwtTokenFilter@13411}
+    10 = {RequestCacheAwareFilter@13412}
+    11 = {SecurityContextHolderAwareRequestFilter@13413}
+    12 = {AnonymousAuthenticationFilter@13414}
+    13 = {SessionManagementFilter@13415}
+    14 = {ExceptionTranslationFilter@13416}
+    15 = {MyFilterSecurityInterceptor@13417}
+    16 = {FilterSecurityInterceptor@13418}
+
 This answer has already got to the heart of what it seems the OP was truly asking. I will augment that answer with a slightly deeper dive into what is going on behind the scenes with the hasPermission expression.
 
 Let's first recap on this answer. The answerer detected that the OP really meant to be using an annotation with two parameters:
