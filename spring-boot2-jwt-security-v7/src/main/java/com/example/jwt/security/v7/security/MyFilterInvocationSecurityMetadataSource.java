@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MySecurityMetadataSource implements FilterInvocationSecurityMetadataSource, SecurityMetadataSource {
+public class MyFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource, SecurityMetadataSource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MySecurityMetadataSource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyFilterInvocationSecurityMetadataSource.class);
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {

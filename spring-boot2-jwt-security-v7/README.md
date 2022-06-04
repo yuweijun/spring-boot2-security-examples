@@ -6,15 +6,176 @@
 
 # How to interpret hasPermission in spring security
 
+1. MyMethodSecurityEvaluationContext
+2. MyMethodSecurityExpressionRoot
+3. MyPermissionEvaluator
+4. MyPrePostAnnotationSecurityMetadataSource
+5. MyDefaultMethodSecurityExpressionHandler
+6. MyMethodSecurityConfig
+
+## core object and method invocation
+
+1. MyMethodSecurityConfig#createExpressionHandler() -> expressionHandler
+2. MyMethodSecurityConfig#customMethodSecurityMetadataSource() -> MyPrePostAnnotationSecurityMetadataSource
+3. expressionHandler#setPermissionEvaluator(new MyPermissionEvaluator())
+4. MyDefaultMethodSecurityExpressionHandler#createSecurityExpressionRoot() -> MyMethodSecurityExpressionRoot
+5. MyDefaultMethodSecurityExpressionHandler#createEvaluationContextInternal() -> MyMethodSecurityEvaluationContext
+6. MyPrePostAnnotationSecurityMetadataSource#getAttributes() -> preAuthorizeAttribute -> "hasPermission('USER', 'read')" 
+7. PreInvocationAuthorizationAdviceVoter#vote() -> preAdvice.before(authentication, method, preAuthorizeAttribute)
+8. ExpressionUtils.evaluateAsBoolean(preAuthorize, ctx) -> MyMethodSecurityEvaluationContext
+9. MyMethodSecurityExpressionRoot#hasPermission(target, permission)
+10. permissionEvaluator.hasPermission(authentication, target, permission)
+ 
     /**
-     * {@link MyDefaultMethodSecurityExpressionHandler#createSecurityExpressionRoot(Authentication, MethodInvocation)}
-     * this method can inject {@link MethodInvocation} and get method info before call super.hasPermission(...)
-     */
-    @Override
-    public boolean hasPermission(Object target, Object permission) {
-        LOGGER.info("hasPermission({}, {}) for MethodInvocation : {}", target, permission, methodInvocation);
-        return super.hasPermission(target, permission);
-    }
+      * {@link MyDefaultMethodSecurityExpressionHandler#createSecurityExpressionRoot(Authentication, MethodInvocation)}
+      * this method can inject {@link MethodInvocation} and get method info before call super.hasPermission(...)
+      */
+     @Override
+     public boolean hasPermission(Object target, Object permission) {
+         LOGGER.info("hasPermission({}, {}) for MethodInvocation : {}", target, permission, methodInvocation);
+         return super.hasPermission(target, permission);
+     }
+
+## ExpressionBasedPreInvocationAdvice#before() and AbstractSecurityExpressionHandler#createEvaluationContext() 
+
+	/**
+	 * Invokes the internal template methods to create {@code StandardEvaluationContext}
+	 * and {@code SecurityExpressionRoot} objects.
+	 *
+	 * @param authentication the current authentication object
+	 * @param invocation the invocation (filter, method, channel)
+	 * @return the context object for use in evaluating the expression, populated with a
+	 * suitable root object.
+	 */
+	public final EvaluationContext createEvaluationContext(Authentication authentication,
+			T invocation) {
+		SecurityExpressionOperations root = createSecurityExpressionRoot(authentication,
+				invocation);
+		StandardEvaluationContext ctx = createEvaluationContextInternal(authentication,
+				invocation);
+		ctx.setBeanResolver(br);
+		ctx.setRootObject(root);
+
+		return ctx;
+	}
+
+## call stack of PermissionEvaluator#hasPermission(...)
+
+    hasPermission:17, MyPermissionEvaluator (com.example.jwt.security.v7.security)
+    hasPermission:175, SecurityExpressionRoot (org.springframework.security.access.expression)
+    hasPermission:83, MyMethodSecurityExpressionRoot (com.example.jwt.security.v7.security)
+    invoke0:-1, NativeMethodAccessorImpl (jdk.internal.reflect)
+    invoke:62, NativeMethodAccessorImpl (jdk.internal.reflect)
+    invoke:43, DelegatingMethodAccessorImpl (jdk.internal.reflect)
+    invoke:566, Method (java.lang.reflect)
+    execute:129, ReflectiveMethodExecutor (org.springframework.expression.spel.support)
+    getValueInternal:112, MethodReference (org.springframework.expression.spel.ast)
+    getValueInternal:95, MethodReference (org.springframework.expression.spel.ast)
+    getTypedValue:117, SpelNodeImpl (org.springframework.expression.spel.ast)
+    getValue:308, SpelExpression (org.springframework.expression.spel.standard)
+    evaluateAsBoolean:26, ExpressionUtils (org.springframework.security.access.expression)
+    before:59, ExpressionBasedPreInvocationAdvice (org.springframework.security.access.expression.method)
+    vote:72, PreInvocationAuthorizationAdviceVoter (org.springframework.security.access.prepost)
+    vote:40, PreInvocationAuthorizationAdviceVoter (org.springframework.security.access.prepost)
+    decide:63, AffirmativeBased (org.springframework.security.access.vote)
+    beforeInvocation:233, AbstractSecurityInterceptor (org.springframework.security.access.intercept)
+    invoke:65, MethodSecurityInterceptor (org.springframework.security.access.intercept.aopalliance)
+    proceed:186, ReflectiveMethodInvocation (org.springframework.aop.framework)
+    proceed:749, CglibAopProxy$CglibMethodInvocation (org.springframework.aop.framework)
+    intercept:691, CglibAopProxy$DynamicAdvisedInterceptor (org.springframework.aop.framework)
+    index:-1, PermissionCheckController$$EnhancerBySpringCGLIB$$770b68c9 (com.example.jwt.security.v7.controller)
+    invoke0:-1, NativeMethodAccessorImpl (jdk.internal.reflect)
+    invoke:62, NativeMethodAccessorImpl (jdk.internal.reflect)
+    invoke:43, DelegatingMethodAccessorImpl (jdk.internal.reflect)
+    invoke:566, Method (java.lang.reflect)
+    doInvoke:190, InvocableHandlerMethod (org.springframework.web.method.support)
+    invokeForRequest:138, InvocableHandlerMethod (org.springframework.web.method.support)
+    invokeAndHandle:105, ServletInvocableHandlerMethod (org.springframework.web.servlet.mvc.method.annotation)
+    invokeHandlerMethod:878, RequestMappingHandlerAdapter (org.springframework.web.servlet.mvc.method.annotation)
+    handleInternal:792, RequestMappingHandlerAdapter (org.springframework.web.servlet.mvc.method.annotation)
+    handle:87, AbstractHandlerMethodAdapter (org.springframework.web.servlet.mvc.method)
+    doDispatch:1040, DispatcherServlet (org.springframework.web.servlet)
+    doService:943, DispatcherServlet (org.springframework.web.servlet)
+    processRequest:1006, FrameworkServlet (org.springframework.web.servlet)
+    doGet:898, FrameworkServlet (org.springframework.web.servlet)
+    service:626, HttpServlet (javax.servlet.http)
+    service:883, FrameworkServlet (org.springframework.web.servlet)
+    service:733, HttpServlet (javax.servlet.http)
+    internalDoFilter:231, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:166, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:53, WsFilter (org.apache.tomcat.websocket.server)
+    internalDoFilter:193, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:166, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:200, AbstractAuthenticationProcessingFilter (org.springframework.security.web.authentication)
+    internalDoFilter:193, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:166, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:320, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    invoke:115, FilterSecurityInterceptor (org.springframework.security.web.access.intercept)
+    doFilter:90, FilterSecurityInterceptor (org.springframework.security.web.access.intercept)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    invoke:126, FilterSecurityInterceptor (org.springframework.security.web.access.intercept)
+    invoke:42, MyFilterSecurityInterceptor (com.example.jwt.security.v7.security)
+    doFilter:66, MyFilterSecurityInterceptor (com.example.jwt.security.v7.security)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:118, ExceptionTranslationFilter (org.springframework.security.web.access)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:137, SessionManagementFilter (org.springframework.security.web.session)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:111, AnonymousAuthenticationFilter (org.springframework.security.web.authentication)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:158, SecurityContextHolderAwareRequestFilter (org.springframework.security.web.servletapi)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:63, RequestCacheAwareFilter (org.springframework.security.web.savedrequest)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilterInternal:55, JwtTokenFilter (com.example.jwt.security.v7.security)
+    doFilter:119, OncePerRequestFilter (org.springframework.web.filter)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilterInternal:52, DefaultLogoutPageGeneratingFilter (org.springframework.security.web.authentication.ui)
+    doFilter:119, OncePerRequestFilter (org.springframework.web.filter)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:216, DefaultLoginPageGeneratingFilter (org.springframework.security.web.authentication.ui)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:200, AbstractAuthenticationProcessingFilter (org.springframework.security.web.authentication)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:200, AbstractAuthenticationProcessingFilter (org.springframework.security.web.authentication)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:116, LogoutFilter (org.springframework.security.web.authentication.logout)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:24, MyFilter (com.example.jwt.security.v7.security)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doHeadersAfter:92, HeaderWriterFilter (org.springframework.security.web.header)
+    doFilterInternal:77, HeaderWriterFilter (org.springframework.security.web.header)
+    doFilter:119, OncePerRequestFilter (org.springframework.web.filter)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilter:105, SecurityContextPersistenceFilter (org.springframework.security.web.context)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilterInternal:56, WebAsyncManagerIntegrationFilter (org.springframework.security.web.context.request.async)
+    doFilter:119, OncePerRequestFilter (org.springframework.web.filter)
+    doFilter:334, FilterChainProxy$VirtualFilterChain (org.springframework.security.web)
+    doFilterInternal:215, FilterChainProxy (org.springframework.security.web)
+    doFilter:178, FilterChainProxy (org.springframework.security.web)
+    invokeDelegate:358, DelegatingFilterProxy (org.springframework.web.filter)
+    doFilter:271, DelegatingFilterProxy (org.springframework.web.filter)
+    internalDoFilter:193, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:166, ApplicationFilterChain (org.apache.catalina.core)
+    doFilterInternal:100, RequestContextFilter (org.springframework.web.filter)
+    doFilter:119, OncePerRequestFilter (org.springframework.web.filter)
+    internalDoFilter:193, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:166, ApplicationFilterChain (org.apache.catalina.core)
+    doFilterInternal:93, FormContentFilter (org.springframework.web.filter)
+    doFilter:119, OncePerRequestFilter (org.springframework.web.filter)
+    internalDoFilter:193, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:166, ApplicationFilterChain (org.apache.catalina.core)
+    doFilterInternal:93, WebMvcMetricsFilter (org.springframework.boot.actuate.metrics.web.servlet)
+    doFilter:119, OncePerRequestFilter (org.springframework.web.filter)
+    internalDoFilter:193, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:166, ApplicationFilterChain (org.apache.catalina.core)
+    doFilterInternal:201, CharacterEncodingFilter (org.springframework.web.filter)
+    doFilter:119, OncePerRequestFilter (org.springframework.web.filter)
+    internalDoFilter:193, ApplicationFilterChain (org.apache.catalina.core)
+    doFilter:166, ApplicationFilterChain (org.apache.catalina.core)
+    ...
+    run:829, Thread (java.lang)
 
 This answer has already got to the heart of what it seems the OP was truly asking. I will augment that answer with a slightly deeper dive into what is going on behind the scenes with the hasPermission expression.
 

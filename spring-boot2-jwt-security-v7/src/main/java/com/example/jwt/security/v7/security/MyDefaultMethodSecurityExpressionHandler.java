@@ -12,6 +12,10 @@ public class MyDefaultMethodSecurityExpressionHandler extends DefaultMethodSecur
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyDefaultMethodSecurityExpressionHandler.class);
 
+    /**
+     * or override {@link #createEvaluationContext(Authentication, Object)} instead of this method
+     * @return new spring EL evaluate context object, {@code StandardEvaluationContext}
+     */
     @Override
     public StandardEvaluationContext createEvaluationContextInternal(Authentication auth, MethodInvocation mi) {
         LOGGER.info("MyDefaultMethodSecurityExpressionHandler#createEvaluationContextInternal() for mi : {}", mi);

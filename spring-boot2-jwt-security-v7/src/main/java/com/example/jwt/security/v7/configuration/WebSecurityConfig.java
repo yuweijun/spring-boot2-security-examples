@@ -7,7 +7,7 @@ import com.example.jwt.security.v7.security.JwtTokenProvider;
 import com.example.jwt.security.v7.security.MyAccessDecisionManager;
 import com.example.jwt.security.v7.security.MyFilter;
 import com.example.jwt.security.v7.security.MyFilterSecurityInterceptor;
-import com.example.jwt.security.v7.security.MySecurityMetadataSource;
+import com.example.jwt.security.v7.security.MyFilterInvocationSecurityMetadataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,7 +128,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private MyFilterSecurityInterceptor myFilterSecurityInterceptor() {
         MyFilterSecurityInterceptor myFilterSecurityInterceptor = new MyFilterSecurityInterceptor();
         myFilterSecurityInterceptor.setAccessDecisionManager(new MyAccessDecisionManager());
-        myFilterSecurityInterceptor.setSecurityMetadataSource(new MySecurityMetadataSource());
+        myFilterSecurityInterceptor.setSecurityMetadataSource(new MyFilterInvocationSecurityMetadataSource());
         return myFilterSecurityInterceptor;
     }
 
