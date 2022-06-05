@@ -6,8 +6,8 @@ import com.example.jwt.security.v7.security.JwtTokenFilter;
 import com.example.jwt.security.v7.security.JwtTokenProvider;
 import com.example.jwt.security.v7.security.MyAccessDecisionManager;
 import com.example.jwt.security.v7.security.MyFilter;
-import com.example.jwt.security.v7.security.MyFilterSecurityInterceptor;
 import com.example.jwt.security.v7.security.MyFilterInvocationSecurityMetadataSource;
+import com.example.jwt.security.v7.security.MyFilterSecurityInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -115,7 +122,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+        String idForEncode = "bcrypt";
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
+        encoders.put(idForEncode, bCryptPasswordEncoder);
+        encoders.put("noop", NoOpPasswordEncoder.getInstance());
+        encoders.put("sha256", new StandardPasswordEncoder());
+        encoders.put("scrypt", new SCryptPasswordEncoder());
+
+        // User{id=3, username='admin', password='{bcrypt}$2a$12$kgM/Xn5sCED9SeWIPeWjJ.jbKCgFLXEmpogIHD6wA9RlbV9JnBGIC', privileges=[Privilege{id=3, name='ADMIN_PRIVILEGE'}], organization=Organization{id=1, name='user.org1'}}
+        return new DelegatingPasswordEncoder(idForEncode, encoders);
     }
 
     @Bean
