@@ -12,24 +12,22 @@
 
 General use of WebSecurity ignoring() method omits Spring Security and none of Spring Security’s features will be available. WebSecurity is based above HttpSecurity.
 
-```java
-@Override
-public void configure(WebSecurity web) throws Exception {
-    web
-    .ignoring()
-    .antMatchers("/resources/**")
-    .antMatchers("/publics/**");
-}
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+        .ignoring()
+        .antMatchers("/resources/**")
+        .antMatchers("/publics/**");
+    }
 
-@Override
-protected void configure(HttpSecurity http) throws Exception {
-    http
-    .authorizeRequests()
-    .antMatchers("/admin/**").hasRole("ADMIN")
-    .antMatchers("/publics/**").hasRole("USER") // no effect
-    .anyRequest().authenticated();
-}
-```
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+        .authorizeRequests()
+        .antMatchers("/admin/**").hasRole("ADMIN")
+        .antMatchers("/publics/**").hasRole("USER") // no effect
+        .anyRequest().authenticated();
+    }
 
 WebSecurity in the above example lets Spring ignore /resources/** and /publics/**. Therefore the .antMatchers("/publics/**").hasRole("USER") in HttpSecurity is unconsidered.
 
@@ -41,23 +39,21 @@ configure(WebSecurity) is used for configuration settings that impact global sec
 
 Let's consider the below code, we can ignore the authentication for the endpoint provided within antMatchers using both the methods.
 
-```java
-@Override
-public void configure(WebSecurity web) throws Exception {
-    web
-    .ignoring()
-    .antMatchers("/login", "/register", "/api/public/**");
-}
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+        .ignoring()
+        .antMatchers("/login", "/register", "/api/public/**");
+    }
 
-@Override
-public void configure(HttpSecurity http) throws Exception {
-    http
-        .csrf().disable()
-        .authorizeRequests()
-        .antMatchers("/login", "/register", "/api/public/**").permitAll()
-        .anyRequest().authenticated();
-}
-```
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/login", "/register", "/api/public/**").permitAll()
+            .anyRequest().authenticated();
+    }
 
 configure(WebSecurity web) Endpoint used in this method ignores the spring security filters, security features (secure headers, csrf protection etc) are also ignored and no security context will be set and can not protect endpoints for Cross-Site Scripting, XSS attacks, content-sniffing.
 

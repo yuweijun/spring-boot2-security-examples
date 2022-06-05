@@ -199,6 +199,44 @@
     15 = {MyFilterSecurityInterceptor@13417}
     16 = {FilterSecurityInterceptor@13418}
 
+# set login page call stack
+
+    setLoginPage:430, AbstractAuthenticationFilterConfigurer (org.springframework.security.config.annotation.web.configurers)
+    <init>:88, AbstractAuthenticationFilterConfigurer (org.springframework.security.config.annotation.web.configurers)
+    <init>:100, AbstractAuthenticationFilterConfigurer (org.springframework.security.config.annotation.web.configurers)
+    <init>:78, FormLoginConfigurer (org.springframework.security.config.annotation.web.configurers)
+    formLogin:1873, HttpSecurity (org.springframework.security.config.annotation.web.builders)
+    configure:85, WebSecurityConfig (com.example.jwt.security.v7.configuration)
+    getHttp:231, WebSecurityConfigurerAdapter (org.springframework.security.config.annotation.web.configuration)
+    init:322, WebSecurityConfigurerAdapter (org.springframework.security.config.annotation.web.configuration)
+    init:94, WebSecurityConfigurerAdapter (org.springframework.security.config.annotation.web.configuration)
+    init:-1, WebSecurityConfig$$EnhancerBySpringCGLIB$$e9231ddf (com.example.jwt.security.v7.configuration)
+    init:370, AbstractConfiguredSecurityBuilder (org.springframework.security.config.annotation)
+    doBuild:324, AbstractConfiguredSecurityBuilder (org.springframework.security.config.annotation)
+    build:41, AbstractSecurityBuilder (org.springframework.security.config.annotation)
+    springSecurityFilterChain:104, WebSecurityConfiguration (org.springframework.security.config.annotation.web.configuration)
+    invoke0:-1, NativeMethodAccessorImpl (jdk.internal.reflect)
+    invoke:62, NativeMethodAccessorImpl (jdk.internal.reflect)
+    invoke:43, DelegatingMethodAccessorImpl (jdk.internal.reflect)
+    invoke:566, Method (java.lang.reflect)
+    instantiate:154, SimpleInstantiationStrategy (org.springframework.beans.factory.support)
+    instantiate:650, ConstructorResolver (org.springframework.beans.factory.support)
+    instantiateUsingFactoryMethod:483, ConstructorResolver (org.springframework.beans.factory.support)
+    instantiateUsingFactoryMethod:1336, AbstractAutowireCapableBeanFactory (org.springframework.beans.factory.support)
+    createBeanInstance:1176, AbstractAutowireCapableBeanFactory (org.springframework.beans.factory.support)
+    doCreateBean:556, AbstractAutowireCapableBeanFactory (org.springframework.beans.factory.support)
+    createBean:516, AbstractAutowireCapableBeanFactory (org.springframework.beans.factory.support)
+    lambda$doGetBean$0:324, AbstractBeanFactory (org.springframework.beans.factory.support)
+    getObject:-1, 122976891 (org.springframework.beans.factory.support.AbstractBeanFactory$$Lambda$232)
+    getSingleton:226, DefaultSingletonBeanRegistry (org.springframework.beans.factory.support)
+    doGetBean:322, AbstractBeanFactory (org.springframework.beans.factory.support)
+    getBean:202, AbstractBeanFactory (org.springframework.beans.factory.support)
+    doGetBean:311, AbstractBeanFactory (org.springframework.beans.factory.support)
+    getBean:202, AbstractBeanFactory (org.springframework.beans.factory.support)
+    preInstantiateSingletons:897, DefaultListableBeanFactory (org.springframework.beans.factory.support)
+    ....
+    run:49, RestartLauncher (org.springframework.boot.devtools.restart)
+
 This answer has already got to the heart of what it seems the OP was truly asking. I will augment that answer with a slightly deeper dive into what is going on behind the scenes with the hasPermission expression.
 
 Let's first recap on this answer. The answerer detected that the OP really meant to be using an annotation with two parameters:
