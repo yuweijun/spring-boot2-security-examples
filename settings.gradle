@@ -12,3 +12,5 @@ include(':spring-boot2-jwt-security-v5')
 include(':spring-boot2-jwt-security-v6')
 include(':spring-boot2-jwt-security-v7')
 include(':spring-boot2-reactive-security')
+include 'spring-boot2-simple-security-v1'
+

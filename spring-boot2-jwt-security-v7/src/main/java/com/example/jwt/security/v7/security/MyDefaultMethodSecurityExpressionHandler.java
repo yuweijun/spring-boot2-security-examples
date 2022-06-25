@@ -13,7 +13,21 @@ public class MyDefaultMethodSecurityExpressionHandler extends DefaultMethodSecur
     private static final Logger LOGGER = LoggerFactory.getLogger(MyDefaultMethodSecurityExpressionHandler.class);
 
     /**
+     * <pre>
+     *     public final EvaluationContext createEvaluationContext(Authentication authentication,
+     *         T invocation) {
+     *         SecurityExpressionOperations root = createSecurityExpressionRoot(authentication,
+     *             invocation);
+     *         StandardEvaluationContext ctx = createEvaluationContextInternal(authentication,
+     *             invocation);
+     *         ctx.setBeanResolver(br);
+     *         ctx.setRootObject(root);
+     *
+     *         return ctx;
+     *     }
+     * </pre>
      * or override {@link #createEvaluationContext(Authentication, Object)} instead of this method
+     *
      * @return new spring EL evaluate context object, {@code StandardEvaluationContext}
      */
     @Override

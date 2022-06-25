@@ -1,0 +1,1 @@
+# simple security framework mimic spring security implementation

@@ -48,10 +48,7 @@
 application-local-hana.yaml
 application-local.yaml
 browsers
-build.properties
-config
 hs_err_pid*
 ide-build-info.properties
-logback-spring.xml
 rebel.xml
 target

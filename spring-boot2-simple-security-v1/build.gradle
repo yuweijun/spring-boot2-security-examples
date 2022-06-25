@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+    id 'com.example.java-conventions'
+    id "org.springframework.boot" version "${spring_boot2_version}"
+    id "io.spring.dependency-management" version "${dependency_management_version}"
+}
+
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-devtools"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+
+    // implementation "com.h2database:h2:2.1.210"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation 'com.jayway.restassured:rest-assured:2.9.0'
+}
+
+test {
+    useJUnitPlatform()
+}
