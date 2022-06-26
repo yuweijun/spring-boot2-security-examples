@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterAt(new MyFilter(), LogoutFilter.class)
             .addFilterBefore(myFilterSecurityInterceptor(), FilterSecurityInterceptor.class);
 
-        // http.exceptionHandling().accessDeniedPage("/login");
+        http.exceptionHandling().accessDeniedPage("/login");
         http.exceptionHandling()
             .accessDeniedHandler(restfulAccessDeniedHandler());
     }
