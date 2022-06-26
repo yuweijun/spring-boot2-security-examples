@@ -8,6 +8,7 @@ import com.example.spring.boot2.simple.security.core.context.SecurityContextHold
 import com.example.spring.boot2.simple.security.web.authentication.AuthenticationFailureHandler;
 import com.example.spring.boot2.simple.security.web.authentication.AuthenticationManager;
 import com.example.spring.boot2.simple.security.web.authentication.AuthenticationSuccessHandler;
+import com.example.spring.boot2.simple.security.web.util.matcher.RegexRequestMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
@@ -65,7 +66,8 @@ public class UsernamePasswordAuthenticationFilter extends GenericFilterBean {
 
     private boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
         // this filter only for request: POST /login
-        if ("POST".equalsIgnoreCase(request.getMethod())) {
+        RegexRequestMatcher requestMatcher = new RegexRequestMatcher("/login", "POST");
+        if (requestMatcher.matches(request)) {
             final String requestURI = request.getRequestURI();
             LOGGER.info("POST requestURI is : {}", requestURI);
             return "/login".equals(requestURI);
