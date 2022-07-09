@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityMetadataSource;
+import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 
 import java.util.Collection;
@@ -20,7 +21,7 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
         allAttributes.add(new ConfigAttribute() {
             @Override
             public String getAttribute() {
-                return "custom";
+                return AuthenticatedVoter.IS_AUTHENTICATED_ANONYMOUSLY;
             }
         });
         LOGGER.info("ConfigAttribute for object : {}", object);

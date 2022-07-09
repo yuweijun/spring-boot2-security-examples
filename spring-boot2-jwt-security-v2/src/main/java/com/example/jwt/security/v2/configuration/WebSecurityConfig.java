@@ -5,7 +5,6 @@ import com.example.jwt.security.v2.exception.RestfulAccessDeniedHandler;
 import com.example.jwt.security.v2.security.JwtLoginFilter;
 import com.example.jwt.security.v2.security.JwtTokenFilter;
 import com.example.jwt.security.v2.security.JwtTokenProvider;
-import com.example.jwt.security.v2.security.MyAccessDecisionManager;
 import com.example.jwt.security.v2.security.MyFilter;
 import com.example.jwt.security.v2.security.MyFilterSecurityInterceptor;
 import com.example.jwt.security.v2.security.MySecurityMetadataSource;
@@ -15,6 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -26,10 +30,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -142,9 +150,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private MyFilterSecurityInterceptor myFilterSecurityInterceptor() {
         MyFilterSecurityInterceptor myFilterSecurityInterceptor = new MyFilterSecurityInterceptor();
-        myFilterSecurityInterceptor.setAccessDecisionManager(new MyAccessDecisionManager());
+        myFilterSecurityInterceptor.setAccessDecisionManager(accessDecisionManager());
         myFilterSecurityInterceptor.setSecurityMetadataSource(new MySecurityMetadataSource());
         return myFilterSecurityInterceptor;
+    }
+
+    private AccessDecisionManager accessDecisionManager() {
+        List<AccessDecisionVoter<?>> decisionVoters = new ArrayList<>();
+        decisionVoters.add(new WebExpressionVoter());
+        decisionVoters.add(new RoleVoter());
+        decisionVoters.add(new AuthenticatedVoter());
+        return new AffirmativeBased(decisionVoters);
     }
 
     @Bean

@@ -2,8 +2,6 @@
 
 # including MySecurityMetadataSource and JwtSecurityImportBeanDefinitionRegistrar
 
-# including MyAccessDecisionManager and MyFilterSecurityInterceptor
-
 ## thymeleaf sec:authorize not working in spring boot
 
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
@@ -58,6 +56,12 @@ Let's consider the below code, we can ignore the authentication for the endpoint
 configure(WebSecurity web) Endpoint used in this method ignores the spring security filters, security features (secure headers, csrf protection etc) are also ignored and no security context will be set and can not protect endpoints for Cross-Site Scripting, XSS attacks, content-sniffing.
 
 configure(HttpSecurity http) Endpoint used in this method ignores the authentication for endpoints used in antMatchers and other security features will be in effect such as secure headers, CSRF protection, etc.
+
+# 有三个具体的 AccessDecisionManager 提供了 Spring 安全，以统计选票。
+
+1. ConsensusBased实现将基于非弃权投票的共识授予或拒绝访问，在票数相等或所有投票都弃权的情况下，提供属性以控制行为。
+2. 如果收到一个或多个ACCESS_GRANTED投票，AffirmativeBased实现将授予访问权限（即，如果至少有一个授予投票，则拒绝投票将被忽略），与ConsensusBased实现类似，如果所有投票者弃权，则有一个参数来控制行为。
+3. UnanimousBased提供者期望获得一致的ACCESS_GRANTED票，以授予访问权限，而忽略弃权，如果有任何ACCESS_DENIED投票，它将拒绝访问，与其他实现一样，如果所有投票者都弃权，则有一个控制行为的参数。
 
 # References
 
